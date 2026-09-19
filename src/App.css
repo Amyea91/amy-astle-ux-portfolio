@@ -1,0 +1,1772 @@
+/* ============================================================
+   Landing / Hero — ORIGINAL Figma book artwork (hero.png)
+   Artwork: src/assets/hero.png (2880×2048, @2x)
+   Parchment safe zone (measured): x 36.7%–70.6%, y 35.2%–65.6%
+   On top of the artwork: real HTML text (name, subtitle,
+   ornamental divider, tagline) + leather OPEN tab on the
+   right edge of the cover.
+   ============================================================ */
+
+.landing {
+  width: 100%;
+  height: 100svh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: #080604;
+  overflow: auto;
+}
+
+
+.hero {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* Stage keeps the artwork's exact 1.40625 aspect ratio;
+   all overlay coordinates are percentages of this box. */
+.hero-stage {
+  position: absolute;
+  left: 136px;
+  top: 233.293px;
+  pointer-events: auto;
+  width: 829.44px;
+  aspect-ratio: 1440 / 1024;
+  user-select: none;
+  container-type: inline-size;
+  /* 3D scene: the front cover rotates around the left spine within
+     this perspective */
+  perspective: 2400px;
+  perspective-origin: 0% 50%;
+}
+
+.hero-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Invisible accessible control over the feather that is already painted into
+   the closed-cover artwork. It adds no new visible UI or artwork. */
+.feather-bookmark-trigger {
+  position: absolute;
+  left: 14.2%;
+  top: 30.4%;
+  width: 4.2%;
+  height: 22.1%;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  clip-path: polygon(
+    48% 0%, 66% 7%, 82% 20%, 94% 39%, 96% 63%,
+    82% 81%, 60% 100%, 42% 96%, 24% 84%, 7% 65%,
+    5% 42%, 16% 22%, 32% 8%
+  );
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.feather-bookmark-trigger::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 52% 48%,
+    rgba(244, 207, 125, 0.2),
+    rgba(190, 132, 53, 0.07) 58%,
+    transparent 82%
+  );
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+}
+
+.phase-closed .feather-bookmark-trigger:hover::after,
+.phase-closed .feather-bookmark-trigger:focus-visible::after {
+  opacity: 1;
+}
+
+.feather-bookmark-trigger:focus {
+  outline: none;
+}
+
+.feather-bookmark-trigger:focus-visible {
+  outline: 2px solid rgba(216, 178, 108, 0.82);
+  outline-offset: 2px;
+  border-radius: 48%;
+}
+
+:not(.phase-closed) .feather-bookmark-trigger {
+  pointer-events: none;
+}
+
+.phase-closed .book-cover,
+.phase-closed .feather-bookmark-trigger {
+  pointer-events: auto;
+}
+
+/* ---- HTML text overlay on the parchment ---- */
+.hero-text {
+  position: absolute;
+  left: 38.2%;
+  right: 30.5%;
+  top: 37.5%;
+  bottom: 36.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.9em;
+  color: #3a2c1c; /* dark sepia ink on parchment */
+  pointer-events: none;
+}
+
+.hero-name {
+  margin: 0;
+  font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-weight: 600;
+  font-size: clamp(22px, 4.6cqi, 58px);
+  letter-spacing: 0.04em;
+  color: #2f2314;
+}
+
+.hero-subtitle {
+  margin: 0;
+  font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(13px, 2.55cqi, 32px);
+  letter-spacing: 0.02em;
+  color: #4a3a24;
+}
+
+/* antique ornamental divider: line — diamond — line */
+.hero-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  margin: 0.1em 0;
+}
+
+.d-line {
+  width: clamp(36px, 7.5cqi, 96px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #55432b);
+}
+
+.d-line:last-child {
+  transform: scaleX(-1);
+}
+
+.d-gem {
+  width: clamp(4px, 0.8cqi, 9px);
+  aspect-ratio: 1;
+  transform: rotate(45deg);
+  background: #4a3a24;
+  box-shadow: 0 0 0 1.5px rgba(74, 58, 36, 0.25);
+}
+
+.hero-tagline {
+  margin: 0;
+  font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  font-size: clamp(12px, 2.2cqi, 27px);
+  letter-spacing: 0.03em;
+  color: #55432b;
+}
+
+/* Subtle text legibility lift that respects the parchment texture */
+.hero-text::before {
+  content: '';
+  position: absolute;
+  inset: -14% -10%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(232, 224, 196, 0.5) 0%,
+    rgba(232, 224, 196, 0.22) 55%,
+    rgba(232, 224, 196, 0) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ---- Leather OPEN tab on the right edge of the cover ----
+   Aged, distressed antique-gold leather made to belong to the
+   gold-tooled hardcover: pale scratches and scuffs, faded wear
+   at the center where fingers have pulled it for years, darker
+   brown-gold showing through worn spots, grime hugging the edges,
+   antique-bronze stitching and an aged-brass rivet. Lies on the
+   cover and wraps past its right edge — the book casts a shadow
+   band across the tab where it exits. */
+.open-tab {
+  /* --edge ≈ 70% of the tab width (12.5cqi): that portion sticks out past
+     the cover's right edge; the remaining ~30% overlaps the cover. */
+  --edge: 8.75cqi;
+  position: absolute;
+  z-index: 3;
+  top: 49%;
+  right: calc(8% - var(--edge));
+  width: clamp(72px, 12.5cqi, 168px);
+  aspect-ratio: 0.94;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6%;
+  padding-left: 6%;
+  border: 1px solid rgba(26, 18, 6, 0.9);
+  border-radius: 7px 9px 9px 7px / 8px 10px 10px 8px;
+  background-color: #6d5a2c;
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent calc(100% - var(--edge) - 7px),
+      rgba(0, 0, 0, 0.5) calc(100% - var(--edge) - 1px),
+      rgba(0, 0, 0, 0.22) calc(100% - var(--edge) + 7px),
+      rgba(0, 0, 0, 0.34) 100%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.5'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
+    /* uneven mottled discoloration: blotchy tonal shifts of old dye */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.032' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+    /* hand-set wear: pale scratches, scuff marks, hairline cracks in
+       dried leather, and spots where the gold has rubbed through to
+       the darker brown-gold under-leather */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='234' viewBox='0 0 220 234'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M30 54 Q52 48 76 46' stroke='rgba(226,210,168,0.22)' stroke-width='0.6'/%3E%3Cpath d='M98 32 Q116 30 134 36' stroke='rgba(226,210,168,0.16)' stroke-width='0.5'/%3E%3Cpath d='M148 72 L186 66' stroke='rgba(222,206,164,0.2)' stroke-width='0.6'/%3E%3Cpath d='M42 122 Q64 119 82 126' stroke='rgba(230,214,172,0.18)' stroke-width='0.5'/%3E%3Cpath d='M118 110 L166 104' stroke='rgba(226,210,168,0.22)' stroke-width='0.6'/%3E%3Cpath d='M58 170 Q80 174 102 178' stroke='rgba(226,210,168,0.17)' stroke-width='0.5'/%3E%3Cpath d='M134 160 Q156 157 174 164' stroke='rgba(222,206,164,0.15)' stroke-width='0.5'/%3E%3Cpath d='M38 198 L68 203' stroke='rgba(226,210,168,0.14)' stroke-width='0.5'/%3E%3Cpath d='M150 192 L182 187' stroke='rgba(228,214,174,0.18)' stroke-width='0.55'/%3E%3Cpath d='M86 86 L112 81' stroke='rgba(226,212,170,0.15)' stroke-width='0.45'/%3E%3Cpath d='M24 96 Q34 100 40 108' stroke='rgba(224,210,168,0.13)' stroke-width='0.45'/%3E%3Cpath d='M188 140 Q180 148 170 150' stroke='rgba(224,210,168,0.14)' stroke-width='0.45'/%3E%3Cpath d='M84 84 L110 79' stroke='rgba(112,82,40,0.3)' stroke-width='0.8'/%3E%3Cpath d='M118 142 Q138 139 156 144' stroke='rgba(110,80,40,0.24)' stroke-width='0.7'/%3E%3Cpath d='M52 150 L76 147' stroke='rgba(112,82,42,0.22)' stroke-width='0.7'/%3E%3Cpath d='M142 46 L164 43' stroke='rgba(110,80,40,0.2)' stroke-width='0.65'/%3E%3Cpath d='M70 30 l5 9 l-3 8 l6 8' stroke='rgba(26,18,6,0.28)' stroke-width='0.5'/%3E%3Cpath d='M176 118 l-6 8 l4 9' stroke='rgba(26,18,6,0.24)' stroke-width='0.5'/%3E%3Cpath d='M44 88 l7 6 l-2 9' stroke='rgba(28,20,8,0.22)' stroke-width='0.45'/%3E%3Cpath d='M128 196 l5 -7 l-2 -8' stroke='rgba(28,20,8,0.2)' stroke-width='0.45'/%3E%3Cpath d='M96 150 l4 7 l-3 7' stroke='rgba(28,20,8,0.18)' stroke-width='0.4'/%3E%3C/g%3E%3Cg fill='rgba(230,214,172,0.14)'%3E%3Cellipse cx='92' cy='58' rx='3.6' ry='1.2' transform='rotate(-12 92 58)'/%3E%3Cellipse cx='148' cy='128' rx='4.2' ry='1.4' transform='rotate(8 148 128)'/%3E%3Cellipse cx='66' cy='132' rx='3' ry='1.1' transform='rotate(-20 66 132)'/%3E%3Cellipse cx='120' cy='188' rx='3.8' ry='1.2' transform='rotate(-6 120 188)'/%3E%3Cellipse cx='170' cy='96' rx='2.6' ry='1' transform='rotate(14 170 96)'/%3E%3C/g%3E%3Cg fill='rgba(104,76,38,0.16)'%3E%3Cellipse cx='104' cy='118' rx='5' ry='2.4' transform='rotate(-8 104 118)'/%3E%3Cellipse cx='60' cy='176' rx='3.6' ry='1.8' transform='rotate(12 60 176)'/%3E%3Cellipse cx='158' cy='52' rx='3' ry='1.6' transform='rotate(-16 158 52)'/%3E%3C/g%3E%3Cg fill='rgba(178,154,106,0.1)'%3E%3Cellipse cx='76' cy='96' rx='9' ry='4.5' transform='rotate(-14 76 96)'/%3E%3Cellipse cx='140' cy='170' rx='8' ry='4' transform='rotate(10 140 170)'/%3E%3Cellipse cx='112' cy='44' rx='6' ry='3' transform='rotate(6 112 44)'/%3E%3C/g%3E%3C/svg%3E"),
+    /* worn, faded center: the gold dye lifts where hands rub it,
+       with a faint halo of darker brown-gold leather showing through */
+    radial-gradient(52% 46% at 50% 45%, rgba(198, 174, 120, 0.18), rgba(198, 174, 120, 0.06) 55%, transparent 74%),
+    radial-gradient(30% 26% at 52% 50%, rgba(96, 70, 34, 0.14), transparent 70%),
+    /* uneven age grime hugging the edges — heavier in corners,
+       lighter along one side, so no edge reads as machine-made */
+    radial-gradient(130% 110% at 16% 6%, rgba(24, 16, 5, 0.46), transparent 48%),
+    radial-gradient(140% 120% at 90% 98%, rgba(22, 14, 4, 0.52), transparent 60%),
+    radial-gradient(120% 100% at 50% 120%, rgba(26, 18, 6, 0.38), transparent 56%),
+    linear-gradient(168deg, #8a7440 0%, #7c6736 40%, #6d5a2c 72%, #574722 100%);
+  background-size:
+    100% 100%,
+    140px 140px,
+    190px 190px,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-blend-mode: normal, overlay, soft-light, normal, normal, normal, normal, normal, normal, normal;
+  box-shadow:
+    inset 0 0 0 1px rgba(24, 16, 6, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.38),
+    inset 2px 0 4px rgba(0, 0, 0, 0.24),
+    inset -2px 0 5px rgba(0, 0, 0, 0.22),
+    -3px 4px 9px rgba(0, 0, 0, 0.32),
+    -1px 2px 4px rgba(0, 0, 0, 0.3);
+  color: #453618;
+  font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    filter 220ms ease;
+}
+
+/* hand-set stitching just inside the tab's edge: small antique-gold
+   stitches drawn as an SVG seam over a dark seated groove, with a
+   hair of rotation and uneven dash lengths so no side reads as a
+   clean CSS border */
+.open-tab::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 7px 10px 10px 7px / 9px 12px 12px 9px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='213' viewBox='0 0 200 213' preserveAspectRatio='none'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Crect x='4.5' y='5.5' width='191' height='202' rx='10' ry='12' stroke='rgba(26,18,6,0.5)' stroke-width='3.2' stroke-dasharray='5.5 4.5' stroke-dashoffset='1.5'/%3E%3Crect x='3.5' y='4' width='191' height='202' rx='10' ry='12' stroke='rgba(236,218,168,0.08)' stroke-width='0.8' stroke-dasharray='5.5 4.5' stroke-dashoffset='1.5' transform='rotate(0.25 100 106)'/%3E%3Crect x='4' y='4.5' width='191' height='202' rx='10' ry='12' stroke='rgba(150,120,68,0.5)' stroke-width='1.5' stroke-dasharray='5.5 4.5' stroke-dashoffset='1.5' transform='rotate(0.25 100 106)'/%3E%3C/g%3E%3C/svg%3E")
+    0 0 / 100% 100% no-repeat;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.22);
+  transform: rotate(0.35deg);
+  pointer-events: none;
+}
+
+/* aged brass rivet near the inner edge: muted gold with a tarnished
+   rim and only a faint highlight — nothing bright or new */
+.rivet {
+  position: absolute;
+  left: 8%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(8px, 1.1cqi, 14px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 34% 28%,
+    #bfa468 0%,
+    #96793f 36%,
+    #57431e 64%,
+    #241a0c 90%
+  );
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(220, 200, 150, 0.1),
+    0 0 0 1px rgba(24, 16, 6, 0.6),
+    0 0 2px rgba(20, 13, 4, 0.4);
+}
+
+/* "OPEN" as dark antique-bronze floss embroidered into the leather:
+   muted brown thread with a faint top sheen, seated by a dark stitch
+   shadow so the letters read as raised stitching, not print */
+.open-label {
+  font-size: clamp(11px, 1.55cqi, 21px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #453618;
+  text-shadow:
+    0 1px 1px rgba(30, 20, 6, 0.5),
+    0 -1px 0 rgba(226, 206, 158, 0.07);
+}
+
+/* arrow worked in the same dark antique-bronze thread as the lettering */
+.open-arrow {
+  font-size: clamp(9px, 1.15cqi, 15px);
+  color: #3d2f13;
+  text-shadow:
+    0 1px 1px rgba(30, 20, 6, 0.45);
+  transform: translateX(6%);
+}
+
+/* hover (closed state only): the tab pulls physically outward from the edge */
+.phase-closed .open-tab:hover {
+  transform: translateX(clamp(3px, 0.5cqi, 7px));
+  color: #55431e;
+  box-shadow:
+    inset 0 0 0 1px rgba(24, 16, 6, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.28),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.36),
+    inset 2px 0 4px rgba(0, 0, 0, 0.22),
+    inset -2px 0 5px rgba(0, 0, 0, 0.2),
+    -5px 6px 12px rgba(0, 0, 0, 0.36),
+    -2px 3px 5px rgba(0, 0, 0, 0.32);
+}
+
+.phase-closed .open-tab:active {
+  transform: translateX(clamp(2px, 0.25cqi, 3px));
+  transition-duration: 90ms;
+}
+
+.open-tab:focus {
+  outline: none;
+}
+
+.open-tab:focus-visible {
+  outline: 2px solid rgba(216, 178, 108, 0.9);
+  outline-offset: 4px;
+}
+
+/* ============================================================
+   Book-opening interaction
+   The existing artwork + text live inside .book-cover, a 3D layer
+   hinged at the LEFT spine. Behind it, a stationary two-page
+   parchment spread is revealed as the cover swings open. The leather
+   clasp is NOT part of the cover: it sits outside it as permanent
+   journal hardware, flips open first, and stays flipped open beside
+   the pages. Closed state is visually identical to the original.
+   ============================================================ */
+
+/* ---- Interior: two-page aged parchment spread (stationary) ---- */
+.book-interior {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  border-radius: 4px;
+  background: #241a0c;
+  padding: 2.2% 2%;
+  box-sizing: border-box;
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.5),
+    2px 3px 2px -1px rgba(28, 17, 8, 0.52),
+    7px 9px 7px -4px rgba(25, 15, 7, 0.38),
+    15px 18px 20px -12px rgba(20, 12, 6, 0.34);
+}
+
+/* Once open, the physical page stack sits above the released clasp. The
+   opening/closing phases keep their existing cover/clasp stacking order. */
+.phase-open .book-interior {
+  z-index: 2;
+}
+
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .book-interior {
+  background-color: transparent;
+}
+
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .book-interior > .page,
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .entry-one-content,
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .entry-two-page,
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .entry-three-page,
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .contact-page,
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .final-page {
+  visibility: hidden;
+}
+
+.entry-page {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.entry-one-content {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.entry-one-content.is-active {
+  opacity: 1;
+}
+
+.journal-navigation {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* A non-interactive continuation of the cover feather, resting along the
+   already-turned left edge. The source has a large transparent canvas and a
+   long chain; this canvas scale makes the feather body itself match the
+   displayed feather body painted into the closed-cover artwork. */
+.decorative-feather-bookmark {
+  position: absolute;
+  z-index: 5;
+  left: -11.1%;
+  top: -1%;
+  height: 64.5%;
+  width: auto;
+  display: block;
+  transform: none;
+  transform-origin: center;
+  filter: drop-shadow(2px 3px 2px rgba(39, 24, 10, 0.28));
+  pointer-events: none;
+  user-select: none;
+}
+
+.my-work-tab {
+  position: absolute;
+  left: 35%;
+  top: -17%;
+  width: 30%;
+  height: 10%;
+  z-index: 1;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: block;
+  overflow: visible;
+  pointer-events: auto;
+  user-select: none;
+  transition: filter 200ms ease;
+  transform-origin: center top;
+}
+
+.phase-open .my-work-tab {
+  z-index: 5;
+}
+
+.my-work-tab img {
+  position: absolute;
+  left: -50%;
+  top: -150%;
+  display: block;
+  width: 200%;
+  height: auto;
+  filter: drop-shadow(1px 2px 2px rgba(34, 21, 9, 0.15));
+  clip-path: inset(0 0 28% 0);
+}
+
+/* Entry Three sits directly beneath its physical divider. Every other
+   settled page sits above the divider and naturally tucks its lower edge. */
+.phase-open :is(
+  .entry-one-content,
+  .entry-two-page,
+  .entry-five-page,
+  .contact-page,
+  .final-page
+).is-active {
+  z-index: 6;
+}
+
+.my-work-tab:hover img {
+  filter: drop-shadow(2px 3px 3px rgba(34, 21, 9, 0.22));
+}
+
+.my-work-tab:focus {
+  outline: none;
+}
+
+.my-work-tab:focus-visible {
+  outline: 1px solid rgba(139, 90, 43, 0.6);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .my-work-tab {
+    transition: none;
+  }
+
+  .my-work-tab:hover img {
+    filter: drop-shadow(1px 2px 2px rgba(34, 21, 9, 0.15));
+  }
+}
+
+.entry-navigation-zone {
+  position: absolute;
+  top: 0;
+  width: 13%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.next-entry-zone {
+  right: 0;
+}
+
+/* Contact's Resume artwork occupies x: 76.2–94.7%, y: 64–95.5%.
+   Carve its overlap out of the normal 13%-wide right-edge turn zone so the
+   full Resume/QR square and the Contact page turn remain separate targets. */
+.contact-next-entry-zone {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 95.5%,
+    59.23% 95.5%,
+    59.23% 64%,
+    0 64%
+  );
+}
+
+.previous-entry-zone {
+  left: 0;
+}
+
+.entry-navigation-zone:focus {
+  outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .entry-navigation-zone {
+    cursor: pointer;
+  }
+}
+
+.pressed-flower {
+  position: absolute;
+  z-index: 1;
+  height: auto;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pressed-flower-purple {
+  left: 2.3%;
+  top: 37.8%;
+  width: 16.25%;
+}
+
+.pressed-flower-yellow {
+  left: 7.7%;
+  top: 70%;
+  width: 29.2%;
+}
+
+.phase-open .pressed-flower-purple {
+  animation: purple-flower-fall 2600ms cubic-bezier(0.22, 0.65, 0.32, 1) forwards;
+}
+
+.phase-open .pressed-flower-yellow {
+  animation: yellow-flower-fall 2800ms cubic-bezier(0.22, 0.65, 0.32, 1) forwards;
+}
+
+@keyframes purple-flower-fall {
+  0% {
+    opacity: 0;
+    transform: translate(-5%, -60%) rotate(-4deg);
+  }
+  14% {
+    opacity: 0.65;
+    transform: translate(2%, -52%) rotate(1.8deg);
+  }
+  29% {
+    opacity: 1;
+    transform: translate(-3.5%, -40%) rotate(-1.8deg);
+  }
+  45% {
+    transform: translate(3%, -27%) rotate(1.4deg);
+  }
+  61% {
+    transform: translate(-2%, -16%) rotate(-0.9deg);
+  }
+  77% {
+    transform: translate(1.2%, -7.5%) rotate(0.5deg);
+  }
+  90% {
+    transform: translate(-0.4%, -2.2%) rotate(-0.15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@keyframes yellow-flower-fall {
+  0% {
+    opacity: 0;
+    transform: translate(4%, -48%) rotate(2.5deg);
+  }
+  14% {
+    opacity: 0.65;
+    transform: translate(-2%, -42%) rotate(-1deg);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(2.5%, -33%) rotate(1.2deg);
+  }
+  47% {
+    transform: translate(-1.8%, -23%) rotate(-0.9deg);
+  }
+  64% {
+    transform: translate(1.4%, -13.5%) rotate(0.6deg);
+  }
+  81% {
+    transform: translate(-0.7%, -6%) rotate(-0.3deg);
+  }
+  92% {
+    transform: translate(0.25%, -1.7%) rotate(0.1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+/* Entry Two remains inactive until page navigation is added. */
+.entry-two-page {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.entry-two-page.is-active {
+  opacity: 1;
+}
+
+/* Future entry-specific controls use this class so they sit above the
+   edge navigation and receive pointer input first. */
+.entry-interactive-zone {
+  pointer-events: auto;
+}
+
+.entry-two-base,
+.entry-two-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.entry-two-layer {
+  opacity: 0;
+}
+
+.phase-open .entry-two-page.is-active:is(.is-settled, .is-turning-out) .entry-two-cloud {
+  animation: entry-two-cloud-arrive 750ms ease-out 80ms forwards;
+}
+
+.phase-open .entry-two-page.is-active:is(.is-settled, .is-turning-out) .entry-two-rain {
+  animation: entry-two-rain-form 850ms ease-out 300ms forwards;
+}
+
+.phase-open .entry-two-page.is-active:is(.is-settled, .is-turning-out) .entry-two-umbrella {
+  animation: entry-two-umbrella-arrive 750ms cubic-bezier(0.22, 0.7, 0.3, 1) 950ms forwards;
+}
+
+.phase-open .entry-two-page.is-active:is(.is-settled, .is-turning-out) .entry-two-ux {
+  animation: entry-two-ux-reveal 650ms cubic-bezier(0.22, 0.7, 0.3, 1) 1700ms forwards;
+}
+
+@keyframes entry-two-cloud-arrive {
+  from {
+    opacity: 0;
+    transform: translate(-3%, -1.5%);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+    filter: blur(0);
+  }
+}
+
+@keyframes entry-two-rain-form {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+@keyframes entry-two-umbrella-arrive {
+  from {
+    opacity: 0;
+    transform: translateX(-18%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes entry-two-ux-reveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 0 100%);
+    transform: translateY(2%);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: translateY(0);
+  }
+}
+
+.entry-three-page {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.entry-three-page.is-active {
+  opacity: 1;
+}
+
+.entry-five-page {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.entry-five-page.is-active {
+  opacity: 1;
+}
+
+.entry-five-base,
+.entry-five-doodle {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.entry-five-base {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.entry-five-doodle {
+  top: 12%;
+  left: 9%;
+  width: 28%;
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+}
+
+.contact-page {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.contact-page.is-active {
+  opacity: 1;
+}
+
+.contact-page-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.contact-link {
+  position: absolute;
+  z-index: 5;
+  display: block;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.contact-phone-link {
+  left: 41.5%;
+  top: 28.5%;
+  width: 20%;
+  height: 11.5%;
+}
+
+.contact-personal-email-link {
+  left: 38.5%;
+  top: 43.2%;
+  width: 33%;
+  height: 10.5%;
+}
+
+.contact-school-email-link {
+  left: 38.5%;
+  top: 57.5%;
+  width: 31%;
+  height: 10.5%;
+}
+
+.contact-resume-link {
+  left: 76.2%;
+  top: 64%;
+  width: 18.5%;
+  height: 31.5%;
+}
+
+.contact-flower {
+  position: absolute;
+  z-index: 2;
+  width: var(--flower-width);
+  height: auto;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contact-flower-left {
+  --flower-width: 16%;
+  --flower-rotation: -78deg;
+  --flower-drift: -2.5%;
+  left: 1.5%;
+  top: 38.1%;
+}
+
+.contact-flower-bottom {
+  --flower-width: 16.5%;
+  --flower-rotation: -74deg;
+  --flower-drift: 2%;
+  left: 14%;
+  top: 69.2%;
+}
+
+.contact-flower-right {
+  --flower-width: 12%;
+  --flower-rotation: 8deg;
+  --flower-drift: -1.5%;
+  left: 87.6%;
+  top: 50%;
+}
+
+.phase-open .contact-page.is-active:is(.is-settled, .is-turning-out) .contact-flower-left {
+  animation: contact-flower-fall 2300ms cubic-bezier(0.22, 0.65, 0.32, 1) 160ms forwards;
+}
+
+.phase-open .contact-page.is-active:is(.is-settled, .is-turning-out) .contact-flower-bottom {
+  animation: contact-flower-fall 2450ms cubic-bezier(0.22, 0.65, 0.32, 1) 520ms forwards;
+}
+
+.phase-open .contact-page.is-active:is(.is-settled, .is-turning-out) .contact-flower-right {
+  animation: contact-flower-fall 2200ms cubic-bezier(0.22, 0.65, 0.32, 1) 880ms forwards;
+}
+
+@keyframes contact-flower-fall {
+  0% {
+    opacity: 0;
+    transform: translate(var(--flower-drift), -65%) rotate(calc(var(--flower-rotation) - 10deg));
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-1.2%, -49%) rotate(calc(var(--flower-rotation) + 5deg));
+  }
+  42% {
+    transform: translate(var(--flower-drift), -31%) rotate(calc(var(--flower-rotation) - 4deg));
+  }
+  66% {
+    transform: translate(0.8%, -15%) rotate(calc(var(--flower-rotation) + 2deg));
+  }
+  84% {
+    transform: translate(-0.35%, -5%) rotate(calc(var(--flower-rotation) - 1deg));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(var(--flower-rotation));
+  }
+}
+
+.final-page {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.final-page.is-active {
+  opacity: 1;
+}
+
+.final-page-base {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.final-postcard-stack,
+.final-message-reveal {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.final-postcard-stack {
+  clip-path: polygon(15% 8%, 23% 4%, 58% 9%, 83% 12%, 91% 25%, 89% 79%, 67% 85%, 24% 82%, 15% 67%);
+}
+
+.final-postcard-stack img,
+.final-message-reveal img {
+  position: absolute;
+  left: -3.0556%;
+  top: -8.9844%;
+  width: 103.0556%;
+  height: 108.9844%;
+  display: block;
+  pointer-events: none;
+}
+
+.phase-open .final-page.is-active:is(.is-settled, .is-turning-out) .final-postcard-stack {
+  animation: final-postcards-drop 1100ms cubic-bezier(0.2, 0.72, 0.28, 1) 260ms forwards;
+}
+
+.phase-open .final-page.is-active:is(.is-settled, .is-turning-out) .final-message-reveal {
+  animation: final-message-wipe 1250ms cubic-bezier(0.42, 0, 0.2, 1) 1650ms forwards;
+}
+
+@keyframes final-postcards-drop {
+  0% {
+    opacity: 1;
+    transform: translateY(-92%) rotate(-1.8deg);
+    filter: drop-shadow(8px 14px 9px rgba(45, 29, 12, 0.28));
+  }
+  68% {
+    opacity: 1;
+    transform: translateY(2.2%) rotate(0.55deg);
+    filter: drop-shadow(5px 8px 6px rgba(45, 29, 12, 0.24));
+  }
+  86% {
+    transform: translateY(-0.7%) rotate(-0.18deg);
+    filter: drop-shadow(3px 5px 4px rgba(45, 29, 12, 0.2));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+    filter: none;
+  }
+}
+
+@keyframes final-message-wipe {
+  0% {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+.entry-three-base,
+.entry-three-note,
+.entry-three-writing-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.entry-three-note,
+.entry-three-writing-line {
+  opacity: 0;
+}
+
+.phase-open .entry-three-page.is-active:is(.is-settled, .is-turning-out) .entry-three-note {
+  animation: entry-three-note-arrive 1100ms cubic-bezier(0.22, 0.72, 0.3, 1) 300ms forwards;
+  transform-origin: 22% 49%;
+}
+
+@keyframes entry-three-note-arrive {
+  0% {
+    opacity: 1;
+    transform: translate(-16%, -5%) rotate(-4deg);
+    filter: drop-shadow(10px 14px 8px rgba(43, 28, 12, 0.28));
+  }
+  72% {
+    opacity: 1;
+    transform: translate(1.2%, 0.8%) rotate(0.7deg);
+    filter: drop-shadow(5px 7px 5px rgba(43, 28, 12, 0.22));
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-0.35%, -0.2%) rotate(-0.2deg);
+    filter: drop-shadow(3px 4px 3px rgba(43, 28, 12, 0.16));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+    filter: none;
+  }
+}
+
+.phase-open .entry-three-page.is-active:is(.is-settled, .is-turning-out) .entry-three-writing-line {
+  animation: entry-three-writing-fade 600ms ease 1650ms forwards;
+}
+
+@keyframes entry-three-writing-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.entry-three-my-projects {
+  position: absolute;
+  bottom: 2%;
+  right: 6%;
+  width: 18%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.is-turning-out {
+  z-index: 7;
+  opacity: 1;
+  pointer-events: none;
+  transition: none;
+}
+
+.phase-open :is(
+  .entry-one-content,
+  .entry-two-page,
+  .entry-five-page,
+  .contact-page,
+  .final-page
+).is-active.is-turning-out {
+  z-index: 7;
+}
+
+.is-turning-out.turn-forward {
+  transform-origin: left center;
+  animation: journal-page-turn-forward 900ms cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+}
+
+.is-turning-out.turn-backward {
+  transform-origin: left center;
+  animation: journal-page-turn-backward 900ms cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+}
+
+@keyframes journal-page-turn-forward {
+  0% {
+    transform: perspective(2200px) translateZ(0) rotateY(0deg);
+    box-shadow: 0 0 0 rgba(34, 21, 9, 0);
+  }
+  38% {
+    transform: perspective(2200px) translateZ(28px) rotateY(-58deg);
+    box-shadow: 12px 8px 18px rgba(34, 21, 9, 0.28);
+  }
+  100% {
+    transform: perspective(2200px) translateZ(0) rotateY(-178deg);
+    box-shadow: 3px 5px 8px rgba(34, 21, 9, 0.12);
+  }
+}
+
+@keyframes journal-page-turn-backward {
+  0% {
+    transform: perspective(2200px) translateZ(0) rotateY(-178deg);
+    box-shadow: 3px 5px 8px rgba(34, 21, 9, 0.12);
+  }
+  62% {
+    transform: perspective(2200px) translateZ(28px) rotateY(-58deg);
+    box-shadow: 12px 8px 18px rgba(34, 21, 9, 0.28);
+  }
+  100% {
+    transform: perspective(2200px) translateZ(0) rotateY(0deg);
+    box-shadow: 0 0 0 rgba(34, 21, 9, 0);
+  }
+}
+
+.page {
+  flex: 1;
+  background-color: #e9dcc0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.14'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 120% at 50% 40%, rgba(255, 250, 235, 0.5), transparent 70%),
+    linear-gradient(160deg, #ecdfc4 0%, #e4d5b6 55%, #d8c7a4 100%);
+  box-shadow:
+    inset 0 0 26px rgba(120, 92, 52, 0.22),
+    inset 0 0 4px rgba(90, 66, 34, 0.18);
+}
+
+/* center binding/gutter shadow between the two pages */
+.page-left {
+  border-radius: 3px 0 0 3px;
+  box-shadow:
+    inset -14px 0 22px -12px rgba(70, 48, 20, 0.55),
+    inset 0 0 26px rgba(120, 92, 52, 0.22);
+}
+
+.page-right {
+  border-radius: 0 3px 3px 0;
+  box-shadow:
+    inset 14px 0 22px -12px rgba(70, 48, 20, 0.55),
+    inset 0 0 26px rgba(120, 92, 52, 0.22);
+}
+
+/* ---- Front cover layer: hinged at the left spine ---- */
+.book-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  box-shadow:
+    3px 5px 2px -1px rgba(27, 16, 8, 0.7),
+    8px 11px 7px -4px rgba(23, 14, 7, 0.52),
+    16px 20px 20px -10px rgba(18, 10, 5, 0.38);
+  transition: box-shadow 600ms ease;
+}
+
+/* inside face of the cover, visible briefly as it swings past ~90°:
+   plain aged endpaper so the cover feels thick, not paper-thin */
+.cover-inside {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: linear-gradient(120deg, #b89d6a 0%, #a08454 60%, #8a7146 100%);
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+/* Cover opening: the right edge first lifts FORWARD toward the viewer
+   (translateZ + slight rotateY), then flows into the hinged swing
+   around the left spine — like pulling a heavy hardcover toward
+   yourself before swinging it open. */
+.phase-opening .book-cover {
+  animation: cover-open 1200ms cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+  transform: translateZ(0) rotateY(-158deg);
+  box-shadow:
+    -2px 4px 3px -1px rgba(27, 16, 8, 0.42),
+    -7px 10px 10px -6px rgba(23, 14, 7, 0.3),
+    -13px 17px 20px -14px rgba(18, 10, 5, 0.24);
+}
+
+.phase-open .book-cover {
+  transform: translateZ(0) rotateY(-158deg);
+  pointer-events: none;
+  box-shadow:
+    -2px 4px 3px -1px rgba(27, 16, 8, 0.42),
+    -7px 10px 10px -6px rgba(23, 14, 7, 0.3),
+    -13px 17px 20px -14px rgba(18, 10, 5, 0.24);
+}
+
+.phase-closing .book-cover {
+  animation: cover-open 1200ms cubic-bezier(0.7, 0, 0.55, 0.95) reverse forwards;
+  pointer-events: none;
+}
+
+@keyframes cover-open {
+  0% {
+    transform: translateZ(0) rotateY(0deg);
+  }
+  /* right edge pulled toward the viewer first */
+  20% {
+    transform: translateZ(70px) rotateY(-10deg);
+  }
+  /* flows into the spine-hinged swing */
+  100% {
+    transform: translateZ(0) rotateY(-158deg);
+  }
+}
+
+/* ---- Shadow cast under the lifting cover ---- */
+.cover-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 4px;
+  background: radial-gradient(90% 80% at 70% 50%, rgba(0, 0, 0, 0.45), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1250ms ease;
+}
+
+.phase-opening .cover-shadow {
+  opacity: 0.55;
+  animation: shadow-settle 1250ms ease forwards;
+}
+
+.phase-closing .cover-shadow {
+  animation: shadow-settle 1200ms ease reverse forwards;
+}
+
+@keyframes shadow-settle {
+  0% { opacity: 0; }
+  30% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
+.close-journal {
+  position: absolute;
+  z-index: 5;
+  top: 0.8%;
+  right: 0.8%;
+  padding: clamp(8px, 1.1cqi, 14px) clamp(10px, 1.4cqi, 18px);
+  border: 0;
+  background: transparent;
+  color: rgba(58, 42, 25, 0.72);
+  font-family: 'Segoe Print', 'Bradley Hand', 'Brush Script MT', cursive;
+  font-size: clamp(11px, 1.35cqi, 17px);
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+  transition: color 180ms ease, transform 180ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.close-journal:focus {
+  outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close-journal {
+    cursor: pointer;
+  }
+
+  .close-journal:hover {
+    color: rgba(43, 29, 16, 0.9);
+    transform: translateY(-1px);
+  }
+}
+
+/* ---- The clasp is permanent journal hardware, not landing-page UI ----
+   It lives OUTSIDE .book-cover (see App.jsx) so it survives the closed →
+   open state change. 3D setup: the strap is hinged on its attached LEFT
+   edge (where it is riveted to the journal's right edge) — that attached
+   edge never moves while the free end swings outward through space, in
+   front of the cover, so nothing ever clips through the journal. */
+.open-tab {
+  transform-origin: right center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Back face of the strap, revealed as the clasp turns past 90°: the
+   reverse side of the same aged leather — plain, with the same
+   stitching seam and the rivet's shank — so the flip reads as a real
+   two-sided strap instead of mirrored lettering. */
+.open-tab::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 7px 9px 9px 7px / 8px 10px 10px 8px;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  border: 1px solid rgba(26, 18, 6, 0.9);
+  background-color: #6d5a2c;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='213' viewBox='0 0 200 213' preserveAspectRatio='none'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Crect x='4.5' y='5.5' width='191' height='202' rx='10' ry='12' stroke='rgba(26,18,6,0.5)' stroke-width='3.2' stroke-dasharray='5.5 4.5' stroke-dashoffset='1.5'/%3E%3Crect x='3.5' y='4' width='191' height='202' rx='10' ry='12' stroke='rgba(236,218,168,0.08)' stroke-width='0.8' stroke-dasharray='5.5 4.5' stroke-dashoffset='1.5' transform='rotate(0.25 100 106)'/%3E%3Crect x='4' y='4.5' width='191' height='202' rx='10' ry='12' stroke='rgba(150,120,68,0.5)' stroke-width='1.5' stroke-dasharray='5.5 4.5' stroke-dashoffset='1.5' transform='rotate(0.25 100 106)'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(circle at 92% 50%, #96793f 0, #57431e 0.55cqi, rgba(87, 67, 30, 0) 0.85cqi),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.5'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.032' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+    radial-gradient(52% 46% at 50% 45%, rgba(198, 174, 120, 0.14), transparent 74%),
+    radial-gradient(130% 110% at 84% 6%, rgba(24, 16, 5, 0.42), transparent 48%),
+    radial-gradient(140% 120% at 10% 98%, rgba(22, 14, 4, 0.46), transparent 60%),
+    linear-gradient(192deg, #8a7440 0%, #7c6736 40%, #6d5a2c 72%, #574722 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    140px 140px,
+    190px 190px,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  box-shadow:
+    inset 0 0 0 1px rgba(24, 16, 6, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.38),
+    -3px 4px 9px rgba(0, 0, 0, 0.32),
+    -1px 2px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* the embroidered face's details belong to the front side only */
+.open-tab::before,
+.open-tab .rivet,
+.open-tab .open-label,
+.open-tab .open-arrow {
+  backface-visibility: hidden;
+}
+
+/* ---- Clasp release: a small unsnap, then a slight outward swing ----
+   Hinged on its attached LEFT edge (which never moves), the strap
+   first pops slightly off the cover (the unsnap), then swings a little
+   outward to the RIGHT — like loosening a leather journal clasp. It
+   never flips over, never spins, and never crosses the book. It
+   settles hanging at a slight downward angle just outside the right
+   edge. This open pose is the persistent state: it holds through the
+   cover swing and remains once the journal is open, still showing its
+   aged-gold leather face. */
+.phase-clasp-open .open-tab,
+.phase-opening .open-tab,
+.phase-open .open-tab,
+.phase-closing .open-tab {
+  transform: rotateY(68deg);
+}
+
+.phase-clasp-open .open-tab {
+  animation: clasp-swing-open 600ms cubic-bezier(0.4, 0.05, 0.22, 1) forwards;
+}
+
+.phase-opening .open-tab,
+.phase-open .open-tab,
+.phase-closing .open-tab {
+  z-index: 1;
+}
+
+/* ---- Once the journal is fully open, the "Open" tab/button is no
+   longer needed and disappears. It stays visible (and unchanged)
+   through closed, clasp-open, and opening — only the final open
+   state hides it. */
+.phase-clasp-closing .open-tab {
+  animation: clasp-swing-open 600ms cubic-bezier(0.55, 0, 0.4, 1) reverse forwards;
+  pointer-events: none;
+}
+
+:not(.phase-closed) > .open-tab {
+  pointer-events: none;
+}
+
+:not(.phase-closed) > .open-tab .open-label,
+:not(.phase-closed) > .open-tab .open-arrow {
+  visibility: hidden;
+}
+
+@keyframes clasp-swing-open {
+  0% {
+    transform: rotateY(0deg);
+  }
+  /* unsnap: the free edge pops slightly off the cover */
+  25% {
+    transform: rotateY(8deg);
+  }
+  /* swings slightly outward to the right on its left hinge */
+  /* settles into its persistent hanging pose — slight downward angle */
+  100% {
+    transform: rotateY(68deg);
+  }
+}
+
+/* ---- Reduced motion: skip the 3D animation, reveal the open book ---- */
+@media (prefers-reduced-motion: reduce) {
+  .close-journal {
+    transition: none;
+  }
+
+  .entry-one-content,
+  .entry-two-page,
+  .entry-three-page,
+  .contact-page,
+  .final-page {
+    transition: none;
+  }
+
+  .phase-open .entry-two-page.is-active .entry-two-layer {
+    opacity: 1;
+    animation: none;
+    clip-path: none;
+    transform: none;
+    filter: none;
+  }
+
+  .phase-open .entry-three-page.is-active .entry-three-note,
+  .phase-open .entry-three-page.is-active .entry-three-writing-line {
+    opacity: 1;
+    animation: none;
+    transform: none;
+    filter: none;
+  }
+
+  .is-turning-out.turn-forward,
+  .is-turning-out.turn-backward {
+    opacity: 0;
+    animation: none;
+    transform: none;
+  }
+
+  .phase-open .pressed-flower {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+
+  .phase-open .contact-page.is-active .contact-flower {
+    opacity: 1;
+    animation: none;
+    transform: rotate(var(--flower-rotation));
+  }
+
+  .phase-open .final-page.is-active .final-postcard-stack,
+  .phase-open .final-page.is-active .final-message-reveal {
+    opacity: 1;
+    animation: none;
+    transform: none;
+    clip-path: none;
+    filter: none;
+  }
+
+  .book-cover,
+  .cover-shadow {
+    transition: none;
+  }
+
+  .phase-opening .book-cover {
+    animation: none;
+  }
+
+  .phase-closing .book-cover {
+    animation: none;
+    transform: none;
+  }
+
+  .phase-opening .book-cover,
+  .phase-open .book-cover {
+    transform: translateZ(0) rotateY(-158deg);
+  }
+
+  .phase-clasp-open .open-tab,
+  .phase-opening .open-tab,
+  .phase-open .open-tab,
+  .phase-closing .open-tab,
+  .phase-clasp-closing .open-tab {
+    transition: none;
+    animation: none;
+  }
+
+  .phase-opening .cover-shadow {
+    animation: none;
+    opacity: 0;
+  }
+
+  .phase-closing .cover-shadow {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ---- Respect reduced motion: state changes without movement ---- */
+@media (prefers-reduced-motion: reduce) {
+  .phase-closed .open-tab {
+    transition: none;
+  }
+
+  .phase-closed .open-tab:hover,
+  .phase-closed .open-tab:active {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   DESK NAVIGATION — Global interactive areas over background
+   ============================================================ */
+
+.scene-size {
+  --design-width: 1536px;
+  --design-height: 1024px;
+  position: relative;
+  flex: none;
+  /* Auto margins center when space exists and become zero when scrolling
+     is needed, keeping the top and left edges reachable at increased zoom. */
+  margin: auto;
+  width: calc(var(--design-width) * var(--scene-scale));
+  height: calc(var(--design-height) * var(--scene-scale));
+  /* Bound overflow to the complete scaled canvas, not the visible viewport.
+     Transforms otherwise leave the unscaled layout box in the scroll area. */
+  overflow: clip;
+}
+
+.desk-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--design-width);
+  height: var(--design-height);
+  transform: scale(var(--scene-scale));
+  transform-origin: top left;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.desk-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* Fade only the outer 3% of the desk artwork into the viewport shadow.
+     The book and interactive layers are separate, unmasked siblings. */
+  mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.5) 1.5%,
+    #000 3%,
+    #000 97%,
+    rgba(0, 0, 0, 0.5) 98.5%,
+    transparent 100%);
+}
+
+.desk-object-hitarea {
+  position: absolute;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  display: block;
+  overflow: visible;
+  pointer-events: auto;
+}
+
+.desk-object-hitarea:focus {
+  outline: none;
+}
+
+/* ---- About Me photograph hit area ----
+   Positioned over the About Me portrait/photograph in the background.
+   Anchored to the rendered background image position, not viewport.
+   Rotated to match the clockwise angle of the photograph. */
+.about-me-area {
+  left: 69%;
+  top: 14.4%;
+  width: 10.3%;
+  height: 20.5%;
+  transform: rotate(12deg);
+  transform-origin: center;
+  border-radius: 2%;
+  box-sizing: border-box;
+  outline: none;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.contact-me-area {
+  left: 69.2%;
+  top: 68.2%;
+  width: 28.2%;
+  height: 29.5%;
+  transform: rotate(-7deg);
+  transform-origin: center;
+  border-radius: 8%;
+  box-sizing: border-box;
+  outline: none;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Two debug-visible hit targets over the physical My Journey pocket watch:
+   one for its engraved lid and one for its clock face. */
+.journey-watch-area {
+  border-radius: 50%;
+  transform: none;
+  transform-origin: center;
+  clip-path: ellipse(50% 50% at 50% 50%);
+  box-sizing: border-box;
+  outline: none;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.journey-watch-upper {
+  left: 80.9%;
+  top: 17.3%;
+  width: 6.8%;
+  height: 10.2%;
+}
+
+.journey-watch-lower {
+  left: 79%;
+  top: 27.1%;
+  width: 7.3%;
+  height: 11%;
+}
+
+.tools-me-area {
+  left: 72.2%;
+  top: 43.7%;
+  width: 16.8%;
+  height: 8%;
+  transform: rotate(8deg);
+  transform-origin: center;
+  border-radius: 4%;
+  box-sizing: border-box;
+  outline: none;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Transparent hit target following the ornate Tools & Resources key. The
+   clipped silhouette avoids claiming the surrounding desk and envelope. */
+.toolkit-key-area {
+  left: 71.1%;
+  top: 53.5%;
+  width: 17.6%;
+  height: 10.5%;
+  transform: rotate(18deg);
+  transform-origin: center;
+  clip-path: polygon(
+    0 15%,
+    10% 0,
+    27% 7%,
+    33% 25%,
+    100% 25%,
+    100% 75%,
+    92% 75%,
+    92% 100%,
+    82% 100%,
+    82% 75%,
+    31% 75%,
+    27% 93%,
+    10% 100%,
+    0 82%
+  );
+  box-sizing: border-box;
+  outline: none;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.about-me-area::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  transform: translateX(-50%);
+  width: clamp(5px, 0.55cqi, 8px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(190, 151, 88, 0.9);
+  box-shadow: 0 1px 3px rgba(28, 16, 6, 0.65);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.about-me-area:focus-visible::after {
+  opacity: 1;
+}
+
+/* Respect reduced motion: no transition effects */
+@media (prefers-reduced-motion: reduce) {
+  .desk-object-hitarea {
+    transition: none;
+  }
+
+  .about-me-area::after {
+    transition: none;
+  }
+}
