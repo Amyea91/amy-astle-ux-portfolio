@@ -1231,6 +1231,14 @@
   transition: box-shadow 600ms ease;
 }
 
+/* Keep the resting cover in the normal painting plane. Preserve 3D only
+   while the cover is actually turning, so its artwork and text stay crisp. */
+.phase-closed .book-cover,
+.phase-clasp-open .book-cover,
+.phase-clasp-closing .book-cover {
+  transform-style: flat;
+}
+
 /* inside face of the cover, visible briefly as it swings past ~90°:
    plain aged endpaper so the cover feels thick, not paper-thin */
 .cover-inside {
@@ -1313,8 +1321,6 @@
 .close-journal {
   position: absolute;
   z-index: 5;
-  top: 0.8%;
-  right: 0.8%;
   padding: clamp(8px, 1.1cqi, 14px) clamp(10px, 1.4cqi, 18px);
   border: 0;
   background: transparent;
@@ -1327,6 +1333,12 @@
   text-transform: lowercase;
   transition: color 180ms ease, transform 180ms ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+.page-close {
+  top: 2.5%;
+  right: 2.5%;
+  pointer-events: auto;
 }
 
 .close-journal:focus {
@@ -1601,6 +1613,178 @@
   transform-origin: top left;
   pointer-events: none;
   z-index: 0;
+}
+
+.mobile-index {
+  display: none;
+}
+
+@media (min-width: 1025px) {
+  .mobile-index {
+    display: none;
+  }
+
+  .my-work-tab {
+    display: block;
+  }
+}
+
+@media (max-width: 1024px) {
+  .landing::before {
+    content: '';
+    flex: none;
+    width: 100%;
+    height: 52px;
+  }
+
+  .hero-text {
+    left: 38.2%;
+    right: 30.5%;
+    gap: 0.65em;
+  }
+
+  .hero-name {
+    font-size: calc(30px / var(--scene-scale));
+    white-space: nowrap;
+  }
+
+  .hero-subtitle {
+    font-size: calc(17px / var(--scene-scale));
+    max-width: 100%;
+    line-height: 1.15;
+  }
+
+  .hero-tagline {
+    font-size: calc(15px / var(--scene-scale));
+    white-space: nowrap;
+  }
+
+  .close-journal {
+    padding: calc(2px / var(--scene-scale)) calc(5px / var(--scene-scale));
+    font-size: calc(10px / var(--scene-scale));
+  }
+
+  .my-work-tab {
+    display: none;
+  }
+
+  .mobile-index {
+    display: flex;
+    position: absolute;
+    top: calc(233.293px - 39px / var(--scene-scale));
+    left: 550.72px;
+    transform: translateX(-50%);
+    z-index: 1;
+    width: min(calc(829.44px - 24px / var(--scene-scale)), calc(370px / var(--scene-scale)), calc((100vw - 24px) / var(--scene-scale)));
+    height: calc(46px / var(--scene-scale));
+    box-sizing: border-box;
+    clip-path: inset(calc(-12px / var(--scene-scale)) 0 calc(8px / var(--scene-scale)));
+    pointer-events: none;
+  }
+
+  .scene-size {
+    overflow: visible;
+  }
+
+  .mobile-index button {
+    position: relative;
+    min-width: 0;
+    box-sizing: border-box;
+    flex: 0 0 calc(16.6667% + 2.5px / var(--scene-scale));
+    height: calc(46px / var(--scene-scale));
+    padding: calc(3px / var(--scene-scale)) calc(2px / var(--scene-scale));
+    border: calc(1px / var(--scene-scale)) solid #321d13;
+    border-bottom: 0;
+    border-radius: calc(9px / var(--scene-scale)) calc(8px / var(--scene-scale)) 0 0;
+    background:
+      radial-gradient(ellipse at 24% 22%, rgba(209, 164, 101, 0.17), transparent 42%),
+      repeating-linear-gradient(103deg, rgba(230, 183, 115, 0.025) 0 1px, transparent 1px 4px),
+      linear-gradient(#765039, #543220 72%, #45291c);
+    box-shadow: inset 0 1px 1px rgba(220, 175, 111, 0.38), inset 0 0 0 2px rgba(35, 20, 13, 0.28), 1px -2px 4px rgba(13, 8, 6, 0.28);
+    color: #ead1a4;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: calc(11px / var(--scene-scale));
+    font-weight: 600;
+    line-height: 1.08;
+    text-shadow: 0 1px 1px rgba(28, 15, 9, 0.75);
+    overflow-wrap: normal;
+    cursor: pointer;
+    touch-action: manipulation;
+    pointer-events: auto;
+  }
+
+  .mobile-index button + button {
+    margin-left: calc(-3px / var(--scene-scale));
+  }
+
+  .mobile-index button::before {
+    content: '';
+    position: absolute;
+    inset: calc(3px / var(--scene-scale)) calc(3px / var(--scene-scale)) 0;
+    border: calc(1px / var(--scene-scale)) dashed rgba(198, 150, 89, 0.45);
+    border-bottom: 0;
+    border-radius: calc(6px / var(--scene-scale)) calc(6px / var(--scene-scale)) 0 0;
+    pointer-events: none;
+  }
+
+  .mobile-index button.is-active {
+    z-index: 2;
+    transform: none;
+    background:
+      radial-gradient(ellipse at 24% 22%, rgba(221, 180, 116, 0.21), transparent 42%),
+      repeating-linear-gradient(103deg, rgba(230, 183, 115, 0.025) 0 1px, transparent 1px 4px),
+      linear-gradient(#80583d, #5b3724 72%, #4b2e1f);
+    box-shadow: inset 0 1px 1px rgba(232, 190, 129, 0.5), inset 0 0 0 2px rgba(35, 20, 13, 0.26), 1px -3px 5px rgba(13, 8, 6, 0.4);
+  }
+
+  .desk-stage:has(.phase-open) .mobile-index button.is-active {
+    transform: translateY(calc(-5px / var(--scene-scale)));
+  }
+
+  .mobile-index button:disabled {
+    color: #cfb58c;
+    cursor: default;
+  }
+
+  .mobile-index small {
+    display: block;
+    margin-top: calc(1px / var(--scene-scale));
+    font-size: calc(8px / var(--scene-scale));
+    font-style: italic;
+  }
+
+  .mobile-index button:nth-child(4) {
+    font-size: calc(9px / var(--scene-scale));
+  }
+
+  .mobile-index button:focus-visible {
+    outline: 2px solid #f0d39c;
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+  .mobile-index {
+    left: 550.72px;
+  }
+
+  .scene-size {
+    width: calc(900px * var(--scene-scale));
+  }
+
+  .desk-stage {
+    left: calc(-101px * var(--scene-scale));
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mobile-index {
+    display: none;
+  }
+
+  .my-work-tab {
+    display: block;
+  }
 }
 
 .desk-background {

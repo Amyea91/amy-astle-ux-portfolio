@@ -39,6 +39,8 @@ const CONTACT_PAGE_INDEX = journalEntries.length
 const FINAL_PAGE_INDEX = CONTACT_PAGE_INDEX + 1
 const journalPages = [...journalEntries, 'contact', 'final']
 const PAGE_TURN_DURATION = 900
+const MOBILE_BREAKPOINT = 1024
+const PORTRAIT_JOURNAL_VIEW_WIDTH = 900
 const RESUME_URL = 'https://drive.google.com/file/d/1av9zVsfiep3CFyuZ2SXoGoot1w4TaPt_/view?usp=drivesdk'
 
 const entryThreeWriting = [
@@ -94,92 +96,32 @@ function JournalNavigation({ currentIndex, onNavigate, onClose }) {
 function App() {
   const viewportRef = useRef(null)
   const sceneRef = useRef(null)
-  const initialBaseScale = useRef(null)
   const [sceneScale, setSceneScale] = useState(1)
-  // TEMPORARY diagnostics: never used to control the scene.
-  const [fitDebug, setFitDebug] = useState(null)
-  const [scaleDebugReport, setScaleDebugReport] = useState('')
 
-  // Reusable for a future explicit Fit to Window control.
   const fitScene = useCallback(() => {
     const viewport = viewportRef.current
     const scene = sceneRef.current
-    // This borderless viewport's outer dimensions exclude any temporary
-    // scrollbar deduction from the previous scale. Scene sizes are untransformed.
-    const nextScale = Math.min(
-      viewport.offsetWidth / scene.offsetWidth,
-      viewport.offsetHeight / scene.offsetHeight,
-      1,
-    )
-    if (initialBaseScale.current === null) initialBaseScale.current = nextScale
+    if (!viewport || !scene) return
+    const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+    const isPortrait = window.matchMedia('(orientation: portrait)').matches
+    // On portrait mobile, fit the journal with a little space around it.
+    // Landscape mobile fits the desk width and allows vertical scrolling.
+    const nextScale = isMobile
+      ? Math.min(viewport.offsetWidth / (isPortrait ? PORTRAIT_JOURNAL_VIEW_WIDTH : scene.offsetWidth), 1)
+      : Math.min(viewport.offsetWidth / scene.offsetWidth, viewport.offsetHeight / scene.offsetHeight, 1)
     setSceneScale(nextScale)
-    setFitDebug({
-      'window.innerWidth': window.innerWidth,
-      'window.innerHeight': window.innerHeight,
-      '.landing offsetWidth': viewport.offsetWidth,
-      '.landing offsetHeight': viewport.offsetHeight,
-      '.desk-stage offsetWidth': scene.offsetWidth,
-      '.desk-stage offsetHeight': scene.offsetHeight,
-      DESIGN_WIDTH: 1536,
-      DESIGN_HEIGHT: 1024,
-      'expected fit (window / design)': Math.min(window.innerWidth / 1536, window.innerHeight / 1024, 1),
-      'expected fit (landing / design)': Math.min(viewport.offsetWidth / 1536, viewport.offsetHeight / 1024, 1),
-      'actual scale passed to setSceneScale': nextScale,
-    })
   }, [])
 
   useLayoutEffect(() => {
-    // Fit on mount only: subsequent viewport changes must not cancel native zoom.
-    // Also guard React Strict Mode's development-only effect replay.
-    if (initialBaseScale.current === null) fitScene()
-  }, [fitScene])
-
-  useLayoutEffect(() => {
-    // Read only after React commits the captured fit and its CSS variable.
-    if (!fitDebug) return
-    const updateDiagnostics = () => {
-      const viewport = viewportRef.current
-      const scene = sceneRef.current
-      const wrapper = scene.parentElement
-      // Visual bounds are diagnostic only; never inputs to fitScene.
-      const wrapperBounds = wrapper.getBoundingClientRect()
-      const sceneBounds = scene.getBoundingClientRect()
-      const sceneStyle = getComputedStyle(scene)
-      const wrapperStyle = getComputedStyle(wrapper)
-      const report = {
-        initialBaseScale: initialBaseScale.current,
-        'LIVE stored sceneScale': sceneScale,
-        'calculated scaledWidth': 1536 * sceneScale,
-        'calculated scaledHeight': 1024 * sceneScale,
-        'LIVE wrapper CSS width x height': `${wrapperStyle.width} x ${wrapperStyle.height}`,
-        'LIVE wrapper bounds (x, y, w, h)': `${wrapperBounds.x}, ${wrapperBounds.y}, ${wrapperBounds.width}, ${wrapperBounds.height}`,
-        'LIVE scene bounds (x, y, w, h)': `${sceneBounds.x}, ${sceneBounds.y}, ${sceneBounds.width}, ${sceneBounds.height}`,
-        'transform-origin': sceneStyle.transformOrigin,
-        'centering method': 'Scaled wrapper; flex auto margins; zero margins when oversized',
-        'LIVE scroll offset (left, top)': `${viewport.scrollLeft}, ${viewport.scrollTop}`,
-        'LIVE window.innerWidth': window.innerWidth,
-        'LIVE window.innerHeight': window.innerHeight,
-        'LIVE applied --scene-scale': getComputedStyle(sceneRef.current).getPropertyValue('--scene-scale').trim(),
-        'LIVE .desk-stage transform': getComputedStyle(sceneRef.current).transform,
-        'LIVE scroll area (width x height)': `${viewport.scrollWidth} x ${viewport.scrollHeight}`,
-        'LIVE visible area (width x height)': `${viewport.clientWidth} x ${viewport.clientHeight}`,
-      }
-      const format = values => Object.entries(values).map(([label, value]) => `${label}: ${value}`).join('\n')
-      const message = '=== PORTFOLIO SCALE DEBUG ===\n'
-        + format(report) + '\n\n--- INITIAL FIT SNAPSHOT ---\n' + format(fitDebug)
-      console.info(message)
-      setScaleDebugReport(message)
-    }
-    updateDiagnostics()
-    // Diagnostic reads only. Never call fitScene or setSceneScale on resize.
-    window.addEventListener('resize', updateDiagnostics)
-    viewportRef.current.addEventListener('scroll', updateDiagnostics, { passive: true })
-    const viewport = viewportRef.current
+    fitScene()
+    const observer = new ResizeObserver(fitScene)
+    observer.observe(viewportRef.current)
+    window.visualViewport?.addEventListener('resize', fitScene)
     return () => {
-      window.removeEventListener('resize', updateDiagnostics)
-      viewport.removeEventListener('scroll', updateDiagnostics)
+      observer.disconnect()
+      window.visualViewport?.removeEventListener('resize', fitScene)
     }
-  }, [fitDebug, sceneScale])
+  }, [fitScene])
 
   const [phase, setPhase] = useState('closed')
   const [currentEntryIndex, setCurrentEntryIndex] = useState(0)
@@ -334,30 +276,27 @@ function App() {
     currentEntryIndex === entryIndex && isEntrySettled ? 'is-settled' : '',
   ].filter(Boolean).join(' ')
 
+  const renderPageClose = (entryIndex) => (
+    isOpen && currentEntryIndex === entryIndex && isEntrySettled ? (
+      <button type="button" className="close-journal page-close" onClick={closeBook}>
+        Close Book
+      </button>
+    ) : null
+  )
+
   return (
-    <main className="landing" ref={viewportRef}>
-      {scaleDebugReport && (
-        <details
-          aria-label="Temporary portfolio scale diagnostics"
-          style={{
-            position: 'fixed', top: 8, right: 8, zIndex: 2147483647,
-            margin: 0, padding: 8, maxWidth: 'min(440px, calc(100vw - 16px))',
-            maxHeight: 'calc(100dvh - 16px)', boxSizing: 'border-box',
-            overflow: 'auto', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere',
-            background: '#080808', color: '#fff', border: '2px solid #ffd166',
-            borderRadius: 4, font: '12px/1.5 monospace', letterSpacing: 0,
-            textAlign: 'left', userSelect: 'text',
-          }}
-        >
-          <summary style={{ cursor: 'pointer' }}>Portfolio scale debug — expand</summary>
-          <pre style={{ margin: '8px 0 0', font: 'inherit', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
-            {scaleDebugReport}
-          </pre>
-        </details>
-      )}
+    <main className="landing" ref={viewportRef} style={{ '--scene-scale': sceneScale }}>
       <div className="scene-size" style={{ '--scene-scale': sceneScale }}>
       <div className="desk-stage" ref={sceneRef}>
         <img className="desk-background" src={portfolioDesk} alt="" aria-hidden="true" />
+        <nav className="mobile-index" aria-label="Journal navigation">
+          <button type="button" className={currentEntryIndex === 0 ? 'is-active' : ''} aria-current={currentEntryIndex === 0 ? 'page' : undefined} onClick={handleAboutMeClick}>About</button>
+          <button type="button" className={currentEntryIndex === 1 ? 'is-active' : ''} aria-current={currentEntryIndex === 1 ? 'page' : undefined} onClick={handleJourneyClick}>Journey</button>
+          <button type="button" className={currentEntryIndex === MY_WORK_ENTRY_INDEX ? 'is-active' : ''} aria-current={currentEntryIndex === MY_WORK_ENTRY_INDEX ? 'page' : undefined} onClick={handleMyWorkTabClick}>My Work</button>
+          <button type="button" disabled aria-label="Skills and Certificates, coming soon">Skills &amp; Certificates <small>Coming Soon</small></button>
+          <button type="button" className={currentEntryIndex === TOOLKIT_ENTRY_INDEX ? 'is-active' : ''} aria-current={currentEntryIndex === TOOLKIT_ENTRY_INDEX ? 'page' : undefined} onClick={handleToolkitKeyClick}>My Toolkit</button>
+          <button type="button" className={currentEntryIndex >= CONTACT_PAGE_INDEX ? 'is-active' : ''} aria-current={currentEntryIndex >= CONTACT_PAGE_INDEX ? 'page' : undefined} onClick={handleContactClick}>Contact</button>
+        </nav>
         <button
           type="button"
           className="desk-object-hitarea about-me-area"
@@ -423,6 +362,7 @@ function App() {
                 aria-hidden="true"
                 draggable="false"
               />
+              {renderPageClose(0)}
             </div>
             <div className={entryClassName('entry-two-page', 1)} aria-hidden={!isEntryVisible(1)}>
               <img
@@ -435,6 +375,7 @@ function App() {
               <img className="entry-two-layer entry-two-rain" src={entryTwoRain} alt="" draggable="false" />
               <img className="entry-two-layer entry-two-umbrella" src={entryTwoUmbrella} alt="" draggable="false" />
               <img className="entry-two-layer entry-two-ux" src={entryTwoUx} alt="" draggable="false" />
+              {renderPageClose(1)}
             </div>
             <div className={entryClassName('entry-three-page', 2)} aria-hidden={!isEntryVisible(2)}>
               <img
@@ -459,6 +400,7 @@ function App() {
                 alt=""
                 draggable="false"
               />
+              {renderPageClose(2)}
             </div>
             <div className={entryClassName('entry-five-page', 3)} aria-hidden={!isEntryVisible(3)}>
               <img
@@ -467,6 +409,7 @@ function App() {
                 alt="Entry Five journal page showcasing My Toolkit with design and development tools"
                 draggable="false"
               />
+              {renderPageClose(3)}
             </div>
             <div
               className={entryClassName('contact-page', CONTACT_PAGE_INDEX)}
@@ -495,6 +438,7 @@ function App() {
                   />
                 </>
               )}
+              {renderPageClose(CONTACT_PAGE_INDEX)}
             </div>
             <div
               className={entryClassName('final-page', FINAL_PAGE_INDEX)}
@@ -512,6 +456,7 @@ function App() {
               <div className="final-message-reveal" aria-hidden="true">
                 <img src={finalPageComplete} alt="" draggable="false" />
               </div>
+              {renderPageClose(FINAL_PAGE_INDEX)}
             </div>
             {isDecorativeBookmarkVisible && (
               <img
@@ -562,7 +507,7 @@ function App() {
             />
             <div className="hero-text">
               <h1 className="hero-name">Amy Astle</h1>
-              <p className="hero-subtitle">The Thoughts Behind the Design</p>
+              <p className="hero-subtitle">Designing with Purpose</p>
               <div className="hero-divider" aria-hidden="true">
                 <span className="d-line" />
                 <span className="d-gem" />
@@ -574,16 +519,6 @@ function App() {
 
           {/* soft shadow cast under the lifting cover */}
           <div className="cover-shadow" aria-hidden="true" />
-
-          {isOpen && (
-            <button
-              type="button"
-              className="close-journal"
-              onClick={closeBook}
-            >
-              Close Book
-            </button>
-          )}
 
           {/* ---- Leather clasp: PERMANENT journal hardware ----
               Lives OUTSIDE .book-cover so it survives the closed → open
