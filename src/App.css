@@ -1770,6 +1770,13 @@
     height: 52px;
   }
 
+  /* The mobile tagline is wider than the plaque at phone widths. Scale only
+     the closed-cover text group so it stays inside the existing artwork. */
+  :is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .hero-text {
+    transform: scale(0.60);
+    transform-origin: center;
+  }
+
   .hero-text {
     left: 38.2%;
     right: 30.5%;
