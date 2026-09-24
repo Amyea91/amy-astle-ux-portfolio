@@ -30,14 +30,18 @@ import contactPage from './assets/contact-page.png'
 import finalPageBase from './assets/final-page-base.png'
 import finalPagePostcards from './assets/final-page-postcards.png'
 import finalPageComplete from './assets/final-page-complete.png'
+import tahleeWireframes from './assets/Wireframepng.png'
 import './App.css'
 
-const journalEntries = ['one', 'two', 'three', 'five']
+const journalEntries = ['one', 'two', 'three', 'tahlee', 'five']
 const MY_WORK_ENTRY_INDEX = 2
-const TOOLKIT_ENTRY_INDEX = 3
+const TAHLEE_ENTRY_INDEX = journalEntries.indexOf('tahlee')
+const TOOLKIT_ENTRY_INDEX = journalEntries.indexOf('five')
 const CONTACT_PAGE_INDEX = journalEntries.length
 const FINAL_PAGE_INDEX = CONTACT_PAGE_INDEX + 1
 const journalPages = [...journalEntries, 'contact', 'final']
+const journalPageLabels = ['Entry One', 'Entry Two', 'Entry Three', 'Tahlee', 'My Toolkit', 'Contact', 'the Final Page']
+const TAHLEE_CASE_STUDY_URL = 'https://docs.google.com/document/d/1vUz050S2oBo2392oTFSBbmjxWYdRb6ixzM3cyuVYdt4/edit?usp=sharing'
 const PAGE_TURN_DURATION = 900
 const MOBILE_BREAKPOINT = 1024
 const PORTRAIT_JOURNAL_VIEW_WIDTH = 900
@@ -72,14 +76,14 @@ function JournalNavigation({ currentIndex, onNavigate, onClose }) {
         <button
           type="button"
           className="entry-navigation-zone previous-entry-zone"
-          aria-label={isFinalPage ? 'Return to Contact' : (isContactPage ? 'Return to Entry Three' : `Return to Entry ${currentIndex}`)}
+          aria-label={`Return to ${journalPageLabels[previousIndex]}`}
           onClick={() => onNavigate(previousIndex, 'backward')}
         />
       )}
       <button
         type="button"
         className={`entry-navigation-zone next-entry-zone${isContactPage ? ' contact-next-entry-zone' : ''}`}
-        aria-label={isFinalPage ? 'Close journal and return to desk' : (isContactPage ? 'Continue to the Final Page' : (currentIndex === journalEntries.length - 1 ? 'Continue to Contact' : `Continue to Entry ${currentIndex + 2}`))}
+        aria-label={isFinalPage ? 'Close journal and return to desk' : `Continue to ${journalPageLabels[nextIndex]}`}
         onClick={isFinalPage ? onClose : () => onNavigate(nextIndex, 'forward')}
       />
     </div>
@@ -258,6 +262,10 @@ function App() {
   }
 
   const isOpen = phase === 'open'
+  const isTahleeInteractive = isOpen
+    && currentEntryIndex === TAHLEE_ENTRY_INDEX
+    && outgoingEntryIndex === null
+    && isEntrySettled
   const isContactInteractive = isOpen
     && currentEntryIndex === CONTACT_PAGE_INDEX
     && outgoingEntryIndex === null
@@ -402,14 +410,29 @@ function App() {
               />
               {renderPageClose(2)}
             </div>
-            <div className={entryClassName('entry-five-page', 3)} aria-hidden={!isEntryVisible(3)}>
+            <section
+              className={entryClassName('tahlee-page', TAHLEE_ENTRY_INDEX)}
+              aria-hidden={!isEntryVisible(TAHLEE_ENTRY_INDEX)}
+              aria-label="Tahlee UX case study"
+              inert={!isTahleeInteractive}
+            >
+              <div className="tahlee-content">
+                <a className="tahlee-image-link" href={TAHLEE_CASE_STUDY_URL} target="_blank" rel="noopener noreferrer">
+                  <img src={tahleeWireframes} alt="Tahlee low-fidelity UX wireframes showing the Home, Weekly Meal Plan, and Browse Recipes screens." draggable="false" />
+                </a>
+                <p className="tahlee-description">Tahlee connects meal planning, pantry inventory, recipe discovery, grocery needs, and budget awareness in one household food-planning experience.</p>
+                <a className="tahlee-process-link" href={TAHLEE_CASE_STUDY_URL} target="_blank" rel="noopener noreferrer">View Full UX Design Process →</a>
+              </div>
+              {renderPageClose(TAHLEE_ENTRY_INDEX)}
+            </section>
+            <div className={entryClassName('entry-five-page', TOOLKIT_ENTRY_INDEX)} aria-hidden={!isEntryVisible(TOOLKIT_ENTRY_INDEX)}>
               <img
                 className="entry-five-base"
                 src={entryFiveBase}
                 alt="Entry Five journal page showcasing My Toolkit with design and development tools"
                 draggable="false"
               />
-              {renderPageClose(3)}
+              {renderPageClose(TOOLKIT_ENTRY_INDEX)}
             </div>
             <div
               className={entryClassName('contact-page', CONTACT_PAGE_INDEX)}

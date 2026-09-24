@@ -798,6 +798,139 @@
   opacity: 1;
 }
 
+/* Tahlee artifact uses the existing journal bounds with compact supporting text. */
+.tahlee-page {
+  background: url('./assets/final-page-base.png') center / 100% 100% no-repeat;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  color: #3a2c1c;
+  font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+}
+
+.tahlee-page.is-active { opacity: 1; }
+
+:is(.phase-closed, .phase-clasp-open, .phase-clasp-closing) .tahlee-page {
+  visibility: hidden;
+}
+
+.tahlee-content {
+  position: absolute;
+  inset: 3% 5% 2%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 4px;
+  text-align: center;
+}
+
+.tahlee-image-link {
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  transition: filter 180ms ease;
+}
+
+.tahlee-image-link img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+}
+
+.tahlee-description {
+  margin: 0;
+  padding: 0 2%;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.tahlee-process-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  color: #3a2c1c;
+  font-size: 16px;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.phase-open .tahlee-page.is-active.is-settled:not([inert]) a {
+  pointer-events: auto;
+}
+
+/* Keep both page edges available above the full-page image link. */
+.book-interior:has(.tahlee-page.is-active) .journal-navigation {
+  z-index: 5;
+}
+
+.book-interior:has(.tahlee-page.is-active) .entry-navigation-zone {
+  width: 5%;
+}
+
+.tahlee-page a:focus-visible {
+  outline: 2px solid #65502c;
+  outline-offset: -4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tahlee-image-link:hover { filter: brightness(1.025); }
+  .tahlee-process-link:hover {
+    color: #65502c;
+    text-decoration-thickness: 2px;
+  }
+}
+
+@media (max-width: 1024px) and (hover: none) and (pointer: coarse) {
+  .tahlee-content {
+    /* Keep the binding holes and edge controls clear; reserve the existing close control. */
+    inset: calc(2.5% + 14px / var(--scene-scale)) 5% 0.5% 9%;
+    container-type: size;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(1px / var(--scene-scale));
+  }
+
+  .tahlee-image-link {
+    /* Fit the original 1526:1031 PNG into the space above the 44px link.
+       The anchor follows its image, rather than filling an empty grid row. */
+    width: min(100cqw, calc((100cqh - 45px / var(--scene-scale)) * 1526 / 1031));
+    max-width: none;
+    height: auto;
+    flex: none;
+  }
+
+  .tahlee-image-link img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .tahlee-description {
+    display: none;
+  }
+
+  .tahlee-process-link {
+    flex: none;
+    max-width: 100%;
+    font-size: calc(15px / var(--scene-scale));
+    min-height: calc(44px / var(--scene-scale));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tahlee-page,
+  .tahlee-image-link { transition: none; }
+}
+
 .entry-five-page {
   position: absolute;
   inset: 0;
